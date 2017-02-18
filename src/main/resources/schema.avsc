@@ -1,0 +1,17 @@
+{
+       "type":"record",
+       "name":"WebLog",
+       "fields":[
+         { "name":"ipaddr", "type":"string" },
+         { "name":"clientid", "type":"string" },
+         { "name":"userid", "type":"string" },
+         { "name":"datetime", "type":"string" },
+         { "name":"method", "type":"string" },
+         { "name":"endpoint", "type":"string" },
+         { "name":"protocol", "type":"string" },
+         { "name":"responsecode", "type":"int" },
+         { "name":"contentsize", "type":"int" },
+         { "name":"referrer", "type":"string" },
+         { "name":"useragent", "type":"string" }
+       ]
+}
