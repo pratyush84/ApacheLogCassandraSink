@@ -1,7 +1,4 @@
-/**
-  * Created by hs4204 on 2/18/2017.
-  */
-
+// This code is from databricks Apache WebLog analyzer project hosted on Databrick's github account
 case class ApacheAccessLog(ipAddress: String,
                            clientIdentd: String,
                            userId: String,
