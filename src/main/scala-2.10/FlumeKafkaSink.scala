@@ -40,49 +40,17 @@ object FlumePollingEventClient {
     val ssc = new StreamingContext(sparkConf, batchInterval)
 
     // Create a flume stream that polls the Spark Sink running in a Flume agent
-    //    val stream = FlumeUtils.createPollingStream(ssc, host, port.toInt)
+  
     val address = Array(new InetSocketAddress(host,port.toInt))
     val stream = FlumeUtils.createPollingStream(ssc,address,StorageLevel.MEMORY_AND_DISK_SER_2, 10,5)
 
 
-
-    /* val mappedlines = stream.map { sparkFlumeEvent =>
-       val event = sparkFlumeEvent.event
-       println("Value of event " + event)
-       println("Value of event Header " + event.getHeaders)
-       println("Value of event Schema " + event.getSchema)
-       val messageBody = new String(event.getBody.array())
-       println("Value of event Body " + messageBody)
-       messageBody
-     }.print()*/
-
-    /*    val mappedline = stream.map{ sparkFlumeEvent =>
-          val event = sparkFlumeEvent.event
-          val messageBody = new String(event.getBody.array())
-          //messageBody
-          val parsedline = parseFromLogLine(messageBody)
-          println("IP Address: " + parsedline.getIpAddress)
-          println("Client ID: " + parsedline.getClientIdentd)
-          println("UserID: " + parsedline.getUserID)
-          println("DateTime: " + parsedline.getDateTimeString)
-          println("Method: " + parsedline.getMethod)
-          println("Endpoint: "+ parsedline.getEndpoint)
-          println("Protocol: "+ parsedline.getProtocol)
-          println("ResponseCode: " + parsedline.getResponseCode)
-          println("ContentSize: " + parsedline.getContentSize)
-          println("Referrer: " + parsedline.getReferrerHeader)
-          println("UserAgent: " + parsedline.getUserAgent)
-        }.print()*/
-
-    // Print out the count of events received from this server in each batch
-    /*stream.count().map(cnt => "Received " + cnt + " flume events.").print()*/
 
     val mappedLines = stream.map(e => new String(e.event.getBody.array()))
 
     mappedLines.foreachRDD( rdd => {
       println("# events = " + rdd.count())
       import io.confluent.kafka.serializers.KafkaAvroSerializer
-      // val kafkaBrokers = "gw01.itversity.com:6667"
       val props = new Properties()
       props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaBrokers)
       props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG,classOf[io.confluent.kafka.serializers.KafkaAvroSerializer])
